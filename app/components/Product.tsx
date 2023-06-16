@@ -1,7 +1,7 @@
 import Image from "next/image";
 import formatPrice from "@/util/PriceFormats";
-import { ProductType } from "@/types/ProductType";
 import Link from "next/link";
+import { ProductType } from "@/types/ProductTypes";
 
 export default function Product({
   name,
@@ -26,6 +26,7 @@ export default function Product({
           height={600}
           width={600}
           className="w-full h-80 object-cover rounded-xl shadow-sm"
+          alt={""}
         />
         <div className="mt-4 font-bold text-teal-700">
           {formatPrice(unit_amount as number)}

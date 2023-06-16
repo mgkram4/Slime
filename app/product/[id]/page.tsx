@@ -11,6 +11,7 @@ export default async function Product({ searchParams }: SearchTypes) {
         height={600}
         width={600}
         className="w-full h-80 object-cover rounded-xl shadow-sm"
+        alt={""}
       />
       <p className="">{searchParams.description}</p>
       <div className="flex gap-2 ">
