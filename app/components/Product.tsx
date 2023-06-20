@@ -19,7 +19,7 @@ export default function Product({
         query: { name, image, unit_amount, id, description, features },
       }}
     >
-      <div className="rounded-lg shadow-md bg-white justify-center items-center p-4 ">
+      <div className="rounded-lg shadow-md bg-slate-100 justify-center items-center p-24 ">
         <div className="text-xl font-bold mb-4">{name}</div>
         <Image
           src={image}

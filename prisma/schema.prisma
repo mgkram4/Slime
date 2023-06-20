@@ -3,29 +3,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 generator client {
   provider = "prisma-client-js"
 }
-
-
 
 model User {
   id                    String     @id @default(uuid())
   name                  String
   email                 String?    @unique
-  emailVerified         DateTime?   @map("email_verified")
+  emailVerified         DateTime?  @map("email_verified")
   image                 String?
   createdAt             DateTime   @default(now())
   updatedAt             DateTime   @updatedAt
   accounts              Account[]
   sessions              Session[]
+  stripeCustomerId      String?
+  orders                Order[]
   @@map("users")
 }
+
+model Order {
+  id           String    @id @default(cuid())
+  user         User      @relation(fields: [userId], references: [id])
+  userId       String
+  amount       Float
+  currency     String
+  status       String
+  createdDate  DateTime  @default(now())
+  paymentIntentID String? @unique
+  products      Product[]
+}
+
+model Product{
+  id String @id @default(cuid())
+  name String
+  description String?
+  unit_amount Float
+  image String? 
+  quantity Float @default(0)
+  order Order[]
+}
+
 model Account {
   id                 String    @id @default(cuid())
-  userId              String    @map("user_id")
-  type                 String?
+  userId             String    @map("user_id")
+  type               String?
   provider           String
   providerAccountId  String    @map("provider_account_id")
   token_type         String?
@@ -33,7 +55,7 @@ model Account {
   access_token       String?   @db.Text
   expires_at         Int?
   scope              String?
-  id_token           String? @db.Text
+  id_token           String?   @db.Text
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -43,25 +65,25 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
-  userId       String?  @map("user_id")
-  sessionToken String   @db.Text @map("session_token") @unique
-  accessToken  String?  @db.Text @map("access_token")
-  expires      DateTime
-  user         User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id            String    @id @default(cuid())
+  userId        String?   @map("user_id")
+  sessionToken  String    @db.Text @map("session_token") @unique
+  accessToken   String?   @db.Text @map("access_token")
+  expires       DateTime
+  user          User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   @@map("sessions")
 }
 
 model VerificationRequest {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   identifier String
-  token      String   @unique
+  token      String    @unique
   expires    DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@unique([identifier, token])
 }
